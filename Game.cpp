@@ -6,7 +6,7 @@
 #define KEY_SPACE 32
 #define KEY_ESC 27
 
-float radius = 10, width = 10;
+float radius = 10, width = 10, points = 0;
 
 bool allchecks();
 
@@ -102,7 +102,7 @@ public:
 pinball()
 {
  ball = new Circle;                                         //Creation of ball
- *ball = Circle(100,105 , 10);
+ *ball = Circle(80,105 , 10);
  dir = vect(0,1);
 }
 
@@ -159,8 +159,10 @@ bool iscollision()
  float x = p->givex(), y = p->givey();
  vect normal(p->givex() - cenx, p->givey() - ceny);
 
- if(dist(x,y,cenx,ceny) <= obsrad + radius && p->givedir()*normal <0)
- {return 1;}
+ if(dist(x,y,cenx,ceny) <= obsrad + radius && p->givedir()*normal <=0)
+ {
+  points += 100;
+  return 1;}
  return 0;
 
 }
@@ -175,9 +177,17 @@ void collision()
    temp.changemod(-1);
 
    float angle = temp*normal/temp.returnmod();                        //see logic for collisionss
-   //cout<<arccosine(-2 *angle)<<" "<<angle<<endl;
-   temp.rotateby(-2*arccosine(angle));
+   //cout<<-2*arccosine(angle)<<" "<<angle<<endl;
+   temp.rotateby(180-2*arccosine(angle));
    p->collision(temp);
+
+   c->setFill(1);
+   c->setScale(.5);
+   c->setColor(COLOR("red"));
+   c->setScale(1);                                                 //To animate
+   c->setFill(0);
+   c->setColor(COLOR("black"));
+
   }
 
 }
@@ -340,7 +350,7 @@ void movepad()                      //To move the bat up and down (by 60 degrees
 bool batborder()
 {
 
- if(p->givex() <=240 && p->givex() >=160)
+ if(p->givex() <=235 && p->givex() >=160)
  {return 1;}
  return 0;
 
@@ -360,7 +370,7 @@ bool iscollision()                      //To check for collision of the ball wit
 void collision()
 {
  if(iscollision())
- {
+ {//cout<<1;
    vect tpara = para, tnorm = norm;
 
    tpara.changemod((p->givedir()*para)); tnorm.changemod(-1*(p->givedir()*norm));            //See collisions in physics
@@ -426,6 +436,8 @@ void work()
   else if(c == KEY_RIGHT)
   {break;}*/
 
+  Text point(40,20,points);
+
   if(checkEvent(e))
   {
     if(keyPressEvent(e))
@@ -434,6 +446,11 @@ void work()
       {b1->movepad();}
       if(ch == KEY_RIGHT)
       {b2->movepad();}
+      if(ch == 'P')
+      { Text t(150,250, "PAUSE");
+        getch();
+
+      }
       else if(ch == KEY_ESC)
       {break;}
     }
