@@ -106,9 +106,9 @@ pinball()
  dir = vect(0,1);
 }
 
-void bmove()
+void bmove(float pixel = 2)
 {
- ball->move(2*dir.x, 2*dir.y);
+ ball->move(pixel*dir.x, pixel*dir.y);
 }
 
 void collision(vect direction)                            //In case a collision occurs
@@ -191,7 +191,7 @@ void collision()
 void endchecks()
 {
  vect temp = p->givedir();
- if( (p->givex() <=0 + radius && temp.x<0)  || (p->givex() >=500 - radius &&temp.x > 0) )
+ if( (p->givex() <=0 + radius && temp.x<0)  || (p->givex() >=300 - radius &&temp.x > 0) )
  {
    vect temp = p->givedir();                              //collision with vertical edges
    temp.x *= -1;
@@ -230,7 +230,7 @@ void moveangle(float a)                     //To move the bat by a particular an
  norm.rotateby(a);
  para.rotateby(a);
 
- p->bmove();                                //To maintain motion of ball
+ p->bmove(4);                                //To maintain motion of ball
  allchecks();
 
  r->move(-40*(1-cosine(a)), 40*sine(a));
@@ -316,7 +316,7 @@ void moveangle(float a)                     //To move the bat by a particular an
 
  //para.print();
 
- p->bmove();                                //To maintain motion of ball
+ p->bmove(4);                                //To maintain motion of ball
  allchecks();
 
  r->move(-40*(1-cosine(-a)), 40*sine(a));
@@ -379,9 +379,9 @@ void collision()
 void makecourse()
 {
  c1 = new circularobs;                      // To make the circular obsstacle
- *c1 = circularobs(105, 200);                        //
+ *c1 = circularobs(100, 200);                        //
  c2 = new circularobs;
- *c2 = circularobs(350, 200);
+ *c2 = circularobs(200, 200);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,8 +395,8 @@ inline bool allchecks()
   c1->collision();
   c2->collision();
 
-  if(p->givey()>=435)
-  {Text t1(250, 250, "GAME OVER");
+  if(p->givey()>=480)
+  {Text t1(150, 250, "GAME OVER");
    t1.imprint();                                   //The GAME OVER condition
    return 0;
   }
@@ -454,7 +454,7 @@ void work()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 main_program{
-initCanvas("Pinball", 500, 500);
+initCanvas("Pinball", 300, 500);
 work();
 
 XEvent e;
