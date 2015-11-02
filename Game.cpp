@@ -446,7 +446,7 @@ void work()
       {b1->movepad();}
       if(ch == KEY_RIGHT)
       {b2->movepad();}
-      if(ch == 'P')
+      if(ch == 'p')
       { Text t(150,250, "PAUSE");
         getch();
 
