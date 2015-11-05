@@ -1,6 +1,7 @@
 #include<simplecpp>
 #include<conio.h>
-#define pi 3.14159265
+#define pi 3.14159265358979323846264338327950288419716939937510
+#define r_2 1.41421356237309504880168872420969807856967187537694807317667973799
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 #define KEY_SPACE 32
@@ -9,15 +10,6 @@
 float radius = 10, width = 10, points = 0;
 
 bool allchecks();
-
-float absol(float a)
-{
- if(a>=0)
- {return a;}
- else
- {return -a;}
-
-}
 
 float dist(float x1, float y1, float x2, float y2)
 {
@@ -198,6 +190,128 @@ void collision()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+class triangle
+{
+    Line* hyp1=NULL;
+    Line* hyp2=NULL;
+    float x,y,height,base,angle;
+    int s2;
+
+    void draw()
+    {
+        Line *l1;
+        l1=new Line;
+        *l1=Line(x,y,x,y-height);
+        l1->imprint();
+        *l1=Line(x,y,x+base*cosine(angle-90),y+base*sine(angle-90));
+        l1->imprint();
+        drawhyp();
+    }
+
+    void drawhyp()
+    {
+        hyp1=new Line;
+        *hyp1 =Line(x,y-height,x+base*cosine(angle-90),y+base*sine(angle-90));
+        hyp2=new Line;
+        *hyp2 =Line(x,y-height,x+base*cosine(angle-90),y+base*sine(angle-90));
+    }
+
+    void changehyp()
+    {
+        *hyp1=Line(x,y-height,x+height/2,y-height/2);
+        *hyp2=Line(x+base*cosine(angle-90),y+base*sine(angle-90),x+height/2,y-height/2);
+        delete hyp1; delete hyp2;
+        drawhyp();
+    }
+
+    bool bet(float x, float a, float b)
+    {
+ //                   cout<<x<<" "<<a<<" "<<b<<endl;
+        if(x>=a&&x<=b||x>=b&&x<=a)
+        {
+
+            return 1;
+        }
+        else
+        {
+ //           cout<<x<<" "<<a<<" "<<b<<" 0"<<endl;
+            return 0;
+        }
+    }
+
+    float line1(float x2,float y2)
+    {    return s2*(x2-x);}
+    float line2(float x2,float y2)
+    {    return (r_2*(y2-y)-s2*(x2-x));}
+    float line3(float x2,float y2)
+    {    return ((y2-y+height)-s2*(1+r_2)*(x2-x));}
+    void detregion(float x2,float y2)
+    {
+        int s1=s2;
+//        cout<<"Ball "<<s2;
+        if(line1(x2,y2)<=0)
+        {    linecol(-1,0,x,y-height-radius,y+radius,s2,x,x-s2*radius,s2,0);}
+        else if(line1(x2,y2)>0&&line3(x2,y2)>=0)
+//      {cout<<"2 ";    linecol(-s2*base*cosine(angle),-base*sine(angle),y*base*sine(angle)-x*s2*(-base*cosine(angle)),-1,s2);}
+        {    linecol(-s2*(1+r_2),1,-y+x*s2*(1+r_2),y-radius/r_2,y+(radius+height)/r_2,s2,x-s2*radius/r_2,x+s2*(radius+height)/r_2,s1);}
+        else if(line3(x2,y2)<0&&line1(x2,y2)>0)
+ //     {cout<<"3 ";    linecol(s2*(height-base*cosine(angle)),-base*sine(angle),(y-height)*base*sine(angle)-s2*x*(height-base*cosine(angle)),1,s2);}
+        {    if(linecol(s2*(1+r_2),-1,y-height-x*s2*(1+r_2),y-height-0.382*radius,y+0.382*radius+height/r_2,s2,x+s2*0.924*radius,x+s2*(0.924*radius+height/r_2),1)==1)
+                changehyp();}
+
+    }
+    void collision(vect para,vect norm)
+{
+   vect tpara = para, tnorm = norm;
+    //cout<<para.x<<" "<<para.y;
+   tpara.changemod((p->givedir()*para)); tnorm.changemod(-1*(p->givedir()*norm));            //See collisions in physics
+   //cout<<1;
+   p->collision(tpara + tnorm);
+   //cout<<norm.x<<" "<<norm.y<<endl;
+   //cout<<p->givedir().x<<" "<<p->givedir().y<<" "<<-1*(p->givedir()*norm);
+ }
+
+    public:
+
+    triangle()
+    {x=y=height=base=angle=0;}
+
+    triangle(float x1,float y1,float height1,float base1,float angle1)
+    {
+        x=x1;y=y1;height=height1,base=base1;angle=angle1;s2=angle/abs(angle);
+        draw();
+    }
+
+    bool linecol(float A,float B, float C,float h1,float h2,int s2,float b1=0,float b2=0,int s1=0,int s3=1)
+    {
+        vect n1(s1*A,B);
+//        float x2,y2,d;
+        float x2=p->givex(),y2=p->givey(),d=p->givedir()*n1;
+        float D=abs((A*x2+B*y2+C)/sqrt(A*A+B*B));
+//        cout<<D<<" "<<d<<endl;
+        if(D<=radius&&bet(y2,h1,h2)&&d<0&&(bet(x2,b1,b2)||(s3==0&&bet(x2,b1,b2))))
+        {
+//            cout<<"COLLISION"<<endl;
+            vect p1(-B,A);
+            n1.changemod(1);p1.changemod(1);
+            collision(p1,n1);
+            return 1;
+        }
+        return 0;
+    }
+    void collision()
+    {
+//        collisionheight();
+        float x2=p->givex(),y2=p->givey();
+        detregion(x2,y2);
+    }
+
+
+}*t1,*t2;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void endchecks()
 {
  vect temp = p->givedir();
@@ -274,7 +388,7 @@ bool iscollision()                      //To check for collision of the ball wit
 {
  vect temp( p->givex()-r->getX(), p->givey()-r->getY());
 
- float dist = absol(temp*norm);
+ float dist = abs(temp*norm);
  //cout<<dist<<" ";
  if(dist <= radius + width && p->givedir()*norm <0 && batborder())
  {
@@ -359,7 +473,7 @@ bool batborder()
 bool iscollision()                      //To check for collision of the ball with bat
 {
  vect temp( p->givex()-r->getX(), p->givey()-r->getY());
- float dist = absol(temp*norm);
+ float dist = abs(temp*norm);
  //cout<<dist()<<" ";
  if(dist <= radius + width && p->givedir()*norm <0 && batborder())
  { return 1; }
@@ -392,6 +506,10 @@ void makecourse()
  *c1 = circularobs(100, 200);                        //
  c2 = new circularobs;
  *c2 = circularobs(200, 200);
+ t1=new triangle;
+ *t1=triangle(80,300,60,60,120);
+ t2=new triangle;
+ *t2=triangle(200,300,60,60,-120);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -404,6 +522,8 @@ inline bool allchecks()
   endchecks();                                   //Checks for all types of collisions
   c1->collision();
   c2->collision();
+  t1->collision();
+  t2->collision();
 
   if(p->givey()>=480)
   {Text t1(150, 250, "GAME OVER");
@@ -428,7 +548,6 @@ void work()
  {
   //wait(.01);
   /*char c = getch();
-
   if(c == KEY_SPACE)
   {}
   if(c == KEY_LEFT)
