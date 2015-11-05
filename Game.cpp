@@ -7,7 +7,9 @@
 #define KEY_SPACE 32
 #define KEY_ESC 27
 
-float radius = 10, width = 10, points = 0;
+float radius = 10, width = 10, points = 0,x2,y2;
+int y_lights=0;
+bool isLaunched=0;
 
 bool allchecks();
 
@@ -87,20 +89,21 @@ void print()
 class pinball
 {
 Circle *ball;
-vect dir;                                           //to determine direction of motion of ball
+vect dir;
+float gravity=0.1;                                         //to determine direction of motion of ball
 
 public:
 
 pinball()
 {
  ball = new Circle;                                         //Creation of ball
- *ball = Circle(80,105 , 10);
- dir = vect(0,1);
+ *ball = Circle(280,450 , 10);
+ dir = vect(0,-1);
 }
 
-void bmove(float pixel = 2)
+void bmove(float pixel = 3)
 {
- ball->move(pixel*dir.x, pixel*dir.y);
+ ball->move(pixel*dir.x, pixel*(dir.y+gravity));
 }
 
 void collision(vect direction)                            //In case a collision occurs
@@ -148,10 +151,10 @@ circularobs(float x, float y, float r = 20)
 
 bool iscollision()
 {
- float x = p->givex(), y = p->givey();
+// float x = p->givex(), y = p->givey();
  vect normal(p->givex() - cenx, p->givey() - ceny);
 
- if(dist(x,y,cenx,ceny) <= obsrad + radius && p->givedir()*normal <=0)
+ if(dist(x2,y2,cenx,ceny) <= obsrad + radius && p->givedir()*normal <=0)
  {
   points += 100;
   return 1;}
@@ -163,7 +166,7 @@ void collision()
 {
   if(iscollision())
   {
-   vect normal(p->givex() - cenx, p->givey() - ceny);
+   vect normal(x2 - cenx, y2 - ceny);
    normal.changemod(1);
    vect temp = p->givedir();
    temp.changemod(-1);
@@ -218,8 +221,8 @@ class triangle
 
     void changehyp()
     {
-        *hyp1=Line(x,y-height,x+height/2,y-height/2);
-        *hyp2=Line(x+base*cosine(angle-90),y+base*sine(angle-90),x+height/2,y-height/2);
+        *hyp1=Line(x,y-height,x+s2*height/2,y-height/2);
+        *hyp2=Line(x+base*cosine(angle-90),y+base*sine(angle-90),x+s2*height/2,y-height/2);
         delete hyp1; delete hyp2;
         drawhyp();
     }
@@ -253,11 +256,15 @@ class triangle
         {    linecol(-1,0,x,y-height-radius,y+radius,s2,x,x-s2*radius,s2,0);}
         else if(line1(x2,y2)>0&&line3(x2,y2)>=0)
 //      {cout<<"2 ";    linecol(-s2*base*cosine(angle),-base*sine(angle),y*base*sine(angle)-x*s2*(-base*cosine(angle)),-1,s2);}
-        {    linecol(-s2*(1+r_2),1,-y+x*s2*(1+r_2),y-radius/r_2,y+(radius+height)/r_2,s2,x-s2*radius/r_2,x+s2*(radius+height)/r_2,s1);}
+        {    linecol(-s2*(1+r_2),1,-y+x*s2*(1+r_2),y+radius/r_2,y+(radius+height)/r_2,s2,x-s2*radius/r_2,x+s2*(-radius+height)/r_2,s1);}
         else if(line3(x2,y2)<0&&line1(x2,y2)>0)
  //     {cout<<"3 ";    linecol(s2*(height-base*cosine(angle)),-base*sine(angle),(y-height)*base*sine(angle)-s2*x*(height-base*cosine(angle)),1,s2);}
         {    if(linecol(s2*(1+r_2),-1,y-height-x*s2*(1+r_2),y-height-0.382*radius,y+0.382*radius+height/r_2,s2,x+s2*0.924*radius,x+s2*(0.924*radius+height/r_2),1)==1)
-                changehyp();}
+             {
+                changehyp();
+                points+=200;
+             }
+        }
 
     }
     void collision(vect para,vect norm)
@@ -286,7 +293,7 @@ class triangle
     {
         vect n1(s1*A,B);
 //        float x2,y2,d;
-        float x2=p->givex(),y2=p->givey(),d=p->givedir()*n1;
+        float d=p->givedir()*n1;
         float D=abs((A*x2+B*y2+C)/sqrt(A*A+B*B));
 //        cout<<D<<" "<<d<<endl;
         if(D<=radius&&bet(y2,h1,h2)&&d<0&&(bet(x2,b1,b2)||(s3==0&&bet(x2,b1,b2))))
@@ -302,7 +309,6 @@ class triangle
     void collision()
     {
 //        collisionheight();
-        float x2=p->givex(),y2=p->givey();
         detregion(x2,y2);
     }
 
@@ -311,6 +317,83 @@ class triangle
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class launcher
+{
+    float height,width,cx,cy,Llength,Lbreadth,Langle;
+    int n_lights;
+    Rectangle r[10],rr;
+
+
+    void draw_lights(float x,float y,int i)
+    {
+        r[i].reset(x,y,Llength,Lbreadth);
+        r[i].rotate(Langle);
+        r[i].setColor(COLOR("black"));
+        r[i].setFill(1);
+    }
+
+    void changelauncher(int i)
+    {
+        r[i].setColor(COLOR("yellow"));
+        r[i].setFill(1);
+    }
+
+    public:
+    launcher()
+    {
+        height=0;width=0;n_lights=0;cx=0;cy=0;
+        Llength=0;Lbreadth=0;Langle=0;
+    }
+
+
+    launcher(float w,float h,float n, float x, float y,float LL,float LB,float LA)
+    {
+        height=h;width=w;n_lights=n;cx=x;cy=y;
+        Llength=LL;Lbreadth=LB;Langle=LA;
+        isLaunched=0;
+    }
+
+    void draw_launcher()
+    {
+        rr.reset(cx,cy,width,height);
+//        rr.imprint();
+        for(int i=0;i<n_lights;i++)
+            draw_lights(cx,cy-(i+1)*50+200,i);
+    }
+
+    void collision()
+    {
+        vect d=p->givedir(),temp(-d.x,d.y);
+        if(y_lights==n_lights)
+        {
+            vect temp(1,-1);
+            p->collision(temp);
+            isLaunched=1;
+            draw_launcher();
+            y_lights=0;
+        }
+        else if(isLaunched==1&&x2>(cx-width/2-radius))
+        {
+            vect temp(-p->givex(),p->givey());
+            p->collision(temp);
+ //           cout<<x2<<" "<<cx-width/2-radius<<endl;
+        }
+
+        else if(y2<cy-(y_lights+1)*50+200&&isLaunched==0)
+            {
+                r[y_lights].setColor(COLOR("yellow"));
+                r[y_lights].setFill(1);
+                y_lights++;
+            }
+
+
+    }
+}*launch;
+
+
+
+
 
 void endchecks()
 {
@@ -510,6 +593,9 @@ void makecourse()
  *t1=triangle(80,300,60,60,120);
  t2=new triangle;
  *t2=triangle(200,300,60,60,-120);
+ launch=new launcher;
+ *launch=launcher(20,400,5,280,250,10,30,-30);
+ launch->draw_launcher();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -524,6 +610,7 @@ inline bool allchecks()
   c2->collision();
   t1->collision();
   t2->collision();
+    launch->collision();
 
   if(p->givey()>=480)
   {Text t1(150, 250, "GAME OVER");
@@ -540,8 +627,8 @@ void work()
  b1 = new bat;
  b2 = new batright;
  p = new pinball;
- b1->moveangle(30);
- b2->moveangle(30);
+ b1->moveangle(60);
+ b2->moveangle(60);
  //XEvent event;                  //Event class in simplecpp
 
  while(1)
@@ -577,6 +664,8 @@ void work()
   }
 
   p->bmove();
+  x2=p->givex();
+  y2=p->givey();
 
   if(allchecks() == 0)
   {break;}
