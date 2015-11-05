@@ -240,7 +240,7 @@ void moveangle(float a)                     //To move the bat by a particular an
  norm.rotateby(a);
  para.rotateby(a);
 
- p->bmove(4);                                //To maintain motion of ball
+ p->bmove(2);                                //To maintain motion of ball
  allchecks();
 
  r->move(-40*(1-cosine(a)), 40*sine(a));
@@ -326,7 +326,7 @@ void moveangle(float a)                     //To move the bat by a particular an
 
  //para.print();
 
- p->bmove(4);                                //To maintain motion of ball
+ p->bmove(2);                                //To maintain motion of ball
  allchecks();
 
  r->move(-40*(1-cosine(-a)), 40*sine(a));
@@ -427,14 +427,6 @@ void work()
  while(1)
  {
   //wait(.01);
-  /*char c = getch();
-
-  if(c == KEY_SPACE)
-  {}
-  if(c == KEY_LEFT)
-  {b1->movepad();}
-  else if(c == KEY_RIGHT)
-  {break;}*/
 
   Text point(40,20,points);
 
@@ -470,11 +462,58 @@ void work()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void welcome()
+{
+initCanvas("Welcome!!", 500, 500);
+
+
+
+Rectangle background(250, 250, 500, 500);
+
+background.setColor(COLOR(171,130,255));
+
+Text(250,100, "Welcome To THE PINBALL GAME!!!");
+Text(250, 200, "INSTRUCTIONS");
+Text(250, 300, "CREDITS");
+Text(250, 300, "PLAY GAME");
+
+wait(5);
+closeCanvas();
+
+}
+
 main_program{
+
+XEvent e;
+
+/*initCanvas("Welcome!!", 500, 500);
+
+
+
+Rectangle background(250, 250, 500, 500);
+
+background.setColor(COLOR(171,130,255));
+
+Text(250,100, "Welcome To THE PINBALL GAME!!!");
+Text(250, 200, "INSTRUCTIONS");
+Text(250, 300, "CREDITS");
+Text(250, 300, "PLAY GAME");
+
+wait(5);
+closeCanvas();
+
+//event1
+initCanvas("INSTRUCTIONS", 500, 500);
+Text(250,250, "Controls\n<-: Move left bat\n->: Move right bat\n'p' - Pause/Continue Game \nPoints will be given for each collision(Shown on top left corner of game \nAll collisions follow newton's laws of physics \nThe game ends when the ball goes under the bat");
+
+
+wait(5); closeCanvas();
+//*/
+
 initCanvas("Pinball", 300, 500);
 work();
 
-XEvent e;
+
 
 nextEvent(e);
 
