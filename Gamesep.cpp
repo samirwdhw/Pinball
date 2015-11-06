@@ -422,7 +422,7 @@ void batright::collision()
                 y_lights++;
 //                cout<<2<<endl;
             }
-        else if(x2<cx-width/2-radius&&isLaunched==2)
+        else if(x2<cx-width/2-radius&&isLaunched==2&&p->givedir().x>0)
         { isLaunched=1;
   //          cout<<3<<endl;
         }
