@@ -138,6 +138,9 @@ circularobs::circularobs()
 { cenx = 0; ceny = 0;
   c = new Circle;
   *c = Circle(cenx, ceny, 0);
+  c->setFill(1); c->setColor(COLOR(124, 252, 0));
+  Circle color(cenx,ceny,0); color.imprint();
+
 }
 
 circularobs::circularobs(float x, float y, float r = 20)
@@ -145,7 +148,9 @@ circularobs::circularobs(float x, float y, float r = 20)
  obsrad = r;
  c = new Circle;
  *c = Circle(x ,y, obsrad);
+ c->setFill(1); c->setColor(COLOR(124, 252, 0));
  cenx = x; ceny = y;
+ Circle color(cenx,ceny,r+2); color.imprint();
 }
 
 bool circularobs::iscollision()
@@ -179,8 +184,8 @@ void circularobs::collision()
    c->setScale(.5);
    c->setColor(COLOR("red"));
    c->setScale(1);                                                 //To animate
-   c->setFill(0);
-   c->setColor(COLOR("black"));
+   c->setFill(1);
+   c->setColor(COLOR(124, 252, 0));
 
   }
 
@@ -194,6 +199,7 @@ bat::bat()
  *r = Rectangle(100, 400, 80, 20);
  norm.x = 0; norm.y = -1;
  para.x = 1; para.y = 0;
+ r->setFill(1); r->setColor(COLOR(151,255,255));
 }
 
 void bat::moveangle(float a)                     //To move the bat by a particular angle
@@ -274,6 +280,7 @@ batright::batright()
  *r = Rectangle(200, 400, 80, 20);
  norm.x = 0; norm.y = -1;
  para.x = 1; para.y = 0;
+ r->setFill(1); r->setColor(COLOR(151,255,255));
 }
 
 void batright::moveangle(float a)                     //To move the bat by a particular angle
@@ -611,6 +618,7 @@ if( x<=270 && x>=30 && y>=195 && y<=205 )
     t6.reset(150, 230, "Points will be given for each collision(Shown on top left corner of game");
     t4.reset(150, 250, "All collisions follow newton's laws of physics");
     t5.reset(150, 270, "The game ends when the ball goes under the bat");
+    getClick();
 }
 
 else if(  x<=185 && x>=115 && y>=295 && y<=305 )
@@ -620,15 +628,16 @@ else if(  x<=185 && x>=115 && y>=295 && y<=305 )
     t2.reset(150, 250, "CREATED BY: ");
     t3.reset(150, 270, "Samir Wadhwa (150100024)");
     t4.reset(150, 290, "Aditi Sharma (150100023)");
+    getClick();
 }
 
-getClick();
+
 
 }
 
 void work()
 {
- //Rectangle Back(150,250,300,500); Back.setFill(1); Back.setColor(COLOR(191, 62, 255)); Back.imprint();
+
 
 
 
@@ -672,7 +681,9 @@ void work()
   y2=p->givey();
 
   if(allchecks() == 0)
-  {break;}
+  {
+   point.imprint();
+   break;}
   b1->collision();
   endchecks();
  }
@@ -688,7 +699,11 @@ main_program{
 XEvent e;
 
 
+
 initCanvas("Pinball", 300, 500);
+
+Rectangle Back(150,250,300,500); Back.setFill(1); Back.setColor(COLOR(238, 224	,229));
+
 work();
 
 
@@ -697,6 +712,6 @@ nextEvent(e);
 
 delete p; delete b1; delete c1; delete c2;
 
-getClick();
+//getClick();
 }
 
