@@ -545,18 +545,29 @@ void batright::collision()
 
 void makecourse()
 {
+ int x1 = 100,y1 = 200, x2 = 200, y2 = 200;
+ int xt1 = 80, yt1 = 300, s1 = 60;
+ int xt2 = 200, yt2 = 300, s2 = 60;
+ char ch = 'n';
+ cout<<"Do you want to make your own course?(y,n) ";cin>>ch;
 
-
-
+ if(ch=='y')
+ {
+   cout<<"CONGRATULATIONS: YOU GET TO MAKE YOUR OWN GAME"<<endl;
+   cout<<"Enter the x,y coordinates of 1st circular obstacle: "; cin>>x1>>y1;
+   cout<<"Enter the x,y coordinates of 2nd circular obstacle: "; cin>>x2>>y2;
+   cout<<"Enter the x,y, side coordinates of 1st Triangle: "; cin>>xt1>>yt1>>s1;
+   cout<<"Enter the x,y, side coordinates of 1st Triangle: "; cin>>xt2>>yt2>>s2;
+ }
 
  c1 = new circularobs;                      // To make the circular obsstacle
- *c1 = circularobs(100, 200);                        //
+ *c1 = circularobs(x1, y1);                        //100,200
  c2 = new circularobs;
- *c2 = circularobs(200, 200);
+ *c2 = circularobs(x2, y2);                        //200,200
  t1=new triangle;
- *t1=triangle(80,300,60,60,120);
+ *t1=triangle(xt1,yt1,s1,s1,120);                  //80,300,60,60,120
  t2=new triangle;
- *t2=triangle(200,300,60,60,-120);
+ *t2=triangle(xt2,yt2,s2,s2,-120);                //200,300,60,60,-120
  launch=new launcher;
  *launch=launcher(20,400,5,280,250,10,30,-30);
  launch->draw_launcher();
@@ -595,6 +606,8 @@ Text t5(150,150, "hmm"); t5.hide();
 Text t6(150,150, "hmm"); t6.hide();
 Text t7(150,150, "hmm"); t7.hide();
 Text t8(150,150, "hmm"); t8.hide();
+Text t9(150,150, "hmm"); t9.hide();
+
 
 int temp = getClick();
 
@@ -610,14 +623,15 @@ float x = temp/65536, y = temp%65536;
 
 if( x<=270 && x>=30 && y>=195 && y<=205 )
 {
-    t8.reset(150, 300, "Click Anywhere To Play");
+    t8.reset(150, 320, "Click Anywhere To Play");
     t1.reset(150, 150, "Controls");
     t2.reset(150, 170, "<-: Move left bat");
     t7.reset(150, 190, "->: Move right bat");
     t3.reset(150, 210, "'p' - Pause/Continue Game");
-    t6.reset(150, 230, "Points will be given for each collision(Shown on top left corner of game");
+    t6.reset(150, 230, "Points will be given for each collision");
     t4.reset(150, 250, "All collisions follow newton's laws of physics");
-    t5.reset(150, 270, "The game ends when the ball goes under the bat");
+    t5.reset(150, 270, "The game ends when ball goes under the bat");
+    t9.reset(150, 290, "Terminal to choose to make your own course");
     getClick();
 }
 
@@ -655,7 +669,8 @@ void work()
  {
 
 
-  Text point(40,20,points);
+  Text point(150,20,points);
+  Text point2(50,20,"Points: ");
 
   if(checkEvent(e))
   {
@@ -683,6 +698,7 @@ void work()
   if(allchecks() == 0)
   {
    point.imprint();
+   point2.imprint();
    break;}
   b1->collision();
   endchecks();
@@ -702,7 +718,7 @@ XEvent e;
 
 initCanvas("Pinball", 300, 500);
 
-Rectangle Back(150,250,300,500); Back.setFill(1); Back.setColor(COLOR(238, 224	,229));
+//Rectangle Back(150,250,300,500); Back.setFill(1); Back.setColor(COLOR(238, 224	,229));
 
 work();
 
