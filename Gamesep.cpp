@@ -10,7 +10,7 @@
 
 float radius = 10, width = 10, points = 0,x2,y2;
 int y_lights=0;
-bool isLaunched=0;
+int isLaunched=0;
 
 pinball *p = NULL;
 circularobs *c1 = NULL,*c2 = NULL;
@@ -393,27 +393,39 @@ void batright::collision()
     void launcher::collision()
     {
         vect d=p->givedir(),temp(-d.x,d.y);
+
         if(y_lights==n_lights)
         {
-            vect temp(1,-1);
+            vect temp(-1,-1);
             p->collision(temp);
-            isLaunched=1;
+            isLaunched=2;
             draw_launcher();
             y_lights=0;
+ //           cout<<0<<endl;
         }
+
         else if(isLaunched==1&&x2>(cx-width/2-radius))
         {
-            vect temp(-p->givex(),p->givey());
+            vect temp(-p->givedir().x,p->givedir().y);
             p->collision(temp);
- //           cout<<x2<<" "<<cx-width/2-radius<<endl;
+              p->bmove();
+//           cout<<1<<endl;
+//            temp.print();
+ //           cout<<endl<<x2<<" "<<cx-width/2-radius<<endl;
         }
 
         else if(y2<cy-(y_lights+1)*50+200&&isLaunched==0)
             {
                 r[y_lights].setColor(COLOR("yellow"));
                 r[y_lights].setFill(1);
+//                cout<<y2<<" "<<cy-(y_lights+1)*50+200<<endl;
                 y_lights++;
+//                cout<<2<<endl;
             }
+        else if(x2<cx-width/2-radius&&isLaunched==2)
+        { isLaunched=1;
+  //          cout<<3<<endl;
+        }
 
 
     }
@@ -556,8 +568,8 @@ void makecourse()
    cout<<"CONGRATULATIONS: YOU GET TO MAKE YOUR OWN GAME"<<endl;
    cout<<"Enter the x,y coordinates of 1st circular obstacle: "; cin>>x1>>y1;
    cout<<"Enter the x,y coordinates of 2nd circular obstacle: "; cin>>x2>>y2;
-   cout<<"Enter the x,y, side coordinates of 1st Triangle: "; cin>>xt1>>yt1>>s1;
-   cout<<"Enter the x,y, side coordinates of 1st Triangle: "; cin>>xt2>>yt2>>s2;
+   cout<<"Enter the x,y, sidelength coordinates of 1st Triangle: "; cin>>xt1>>yt1>>s1;
+   cout<<"Enter the x,y, sidelength coordinates of 1st Triangle: "; cin>>xt2>>yt2>>s2;
  }
 
  c1 = new circularobs;                      // To make the circular obsstacle
@@ -588,7 +600,7 @@ inline bool allchecks()
     launch->collision();
 
   if(p->givey()>=480)
-  {Text t1(150, 250, "GAME OVER");
+  {Text t1(150, 100, "GAME OVER");
    t1.imprint();                                   //The GAME OVER condition
    return 0;
   }
@@ -641,7 +653,7 @@ else if(  x<=185 && x>=115 && y>=295 && y<=305 )
     t1.reset(150, 230, "SPECIAL THANKS TO ADITYA KUMAR AKASH :) ");
     t2.reset(150, 250, "CREATED BY: ");
     t3.reset(150, 270, "Samir Wadhwa (150100024)");
-    t4.reset(150, 290, "Aditi Sharma (150100023)");
+    t4.reset(150, 290, "Anish Ram Senati (150100023)");
     getClick();
 }
 
@@ -681,7 +693,7 @@ void work()
       if(ch == KEY_RIGHT)
       {b2->movepad();}
       if(ch == 'p')
-      { Text t(150,250, "PAUSE");
+      { Text t(150,100, "PAUSE");
         getch();
 
       }
