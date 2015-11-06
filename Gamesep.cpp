@@ -202,7 +202,10 @@ void bat::moveangle(float a)                     //To move the bat by a particul
  norm.rotateby(a);
  para.rotateby(a);
 
- p->bmove(2);                                //To maintain motion of ball
+ if(p->givey()<390)
+ {p->bmove(2);}
+ else
+ {p->bmove(1);}                                //To maintain motion of ball
  allchecks();
 
  r->move(-40*(1-cosine(a)), 40*sine(a));
@@ -256,6 +259,7 @@ void bat::collision()
    tpara.changemod((p->givedir()*para)); tnorm.changemod(-1*(p->givedir()*norm));            //See collisions in physics
    //cout<<1;
    p->collision(tpara + tnorm);
+
    //cout<<norm.x<<" "<<norm.y<<endl;
    //cout<<p->givedir().x<<" "<<p->givedir().y<<" "<<-1*(p->givedir()*norm);
  }
@@ -329,7 +333,9 @@ void batright::collision()
 
    tpara.changemod((p->givedir()*para)); tnorm.changemod(-1*(p->givedir()*norm));            //See collisions in physics
 
-   p->collision(tpara + tnorm);
+   vect tempdir = tpara + tnorm;
+   tempdir.y = -abs(tempdir.y);
+   p->collision(tempdir);
 
  }
 
@@ -622,6 +628,10 @@ getClick();
 
 void work()
 {
+ //Rectangle Back(150,250,300,500); Back.setFill(1); Back.setColor(COLOR(191, 62, 255)); Back.imprint();
+
+
+
  showdisplay();
  makecourse();
  XEvent e;
@@ -672,53 +682,11 @@ void work()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void welcome()
-{
-initCanvas("Welcome!!", 500, 500);
-
-
-
-Rectangle background(250, 250, 500, 500);
-
-background.setColor(COLOR(171,130,255));
-
-Text(250,100, "Welcome To THE PINBALL GAME!!!");
-Text(250, 200, "INSTRUCTIONS");
-Text(250, 300, "CREDITS");
-Text(250, 300, "PLAY GAME");
-
-wait(5);
-closeCanvas();
-
-}
 
 main_program{
 
 XEvent e;
 
-/*initCanvas("Welcome!!", 500, 500);
-
-
-
-Rectangle background(250, 250, 500, 500);
-
-background.setColor(COLOR(171,130,255));
-
-Text(250,100, "Welcome To THE PINBALL GAME!!!");
-Text(250, 200, "INSTRUCTIONS");
-Text(250, 300, "CREDITS");
-Text(250, 300, "PLAY GAME");
-
-wait(5);
-closeCanvas();
-
-//event1
-initCanvas("INSTRUCTIONS", 500, 500);
-Text(250,250, "Controls\n<-: Move left bat\n->: Move right bat\n'p' - Pause/Continue Game \nPoints will be given for each collision(Shown on top left corner of game \nAll collisions follow newton's laws of physics \nThe game ends when the ball goes under the bat");
-
-
-wait(5); closeCanvas();
-//*/
 
 initCanvas("Pinball", 300, 500);
 work();
