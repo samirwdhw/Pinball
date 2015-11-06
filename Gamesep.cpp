@@ -578,6 +578,10 @@ Text t1(150, 150, "WELCOME");
 Text t2(150, 200, "INSTRUCTIONS");
 Text t3(150, 250, "PLAY GAME");
 Text t4(150, 300, "CREDITS");
+Text t5(150,150, "hmm"); t5.hide();
+Text t6(150,150, "hmm"); t6.hide();
+Text t7(150,150, "hmm"); t7.hide();
+Text t8(150,150, "hmm"); t8.hide();
 
 int temp = getClick();
 
@@ -585,7 +589,7 @@ t1.hide(); t2.hide(); t3.hide(); t4.hide();
 
 float x = temp/65536, y = temp%65536;
 
-cout<<x<<" "<<y;
+//cout<<x<<" "<<y;
 
 
 // 115 185
@@ -593,17 +597,19 @@ cout<<x<<" "<<y;
 
 if( x<=270 && x>=30 && y>=195 && y<=205 )
 {
+    t8.reset(150, 300, "Click Anywhere To Play");
     t1.reset(150, 150, "Controls");
     t2.reset(150, 170, "<-: Move left bat");
-    Text t7(150, 190, "->: Move right bat");
+    t7.reset(150, 190, "->: Move right bat");
     t3.reset(150, 210, "'p' - Pause/Continue Game");
-    Text t6(150, 230, "Points will be given for each collision(Shown on top left corner of game");
+    t6.reset(150, 230, "Points will be given for each collision(Shown on top left corner of game");
     t4.reset(150, 250, "All collisions follow newton's laws of physics");
-    Text t5(150, 270, "The game ends when the ball goes under the bat");
+    t5.reset(150, 270, "The game ends when the ball goes under the bat");
 }
 
 else if(  x<=185 && x>=115 && y>=295 && y<=305 )
 {
+    t5.reset(150, 320, "Click Anywhere To Play");
     t1.reset(150, 230, "SPECIAL THANKS TO ADITYA KUMAR AKASH :) ");
     t2.reset(150, 250, "CREATED BY: ");
     t3.reset(150, 270, "Samir Wadhwa (150100024)");
