@@ -627,8 +627,8 @@ void work()
  b1 = new bat;
  b2 = new batright;
  p = new pinball;
- b1->moveangle(60);
- b2->moveangle(60);
+ b1->moveangle(30);
+ b2->moveangle(30);
  //XEvent event;                  //Event class in simplecpp
 
  while(1)
