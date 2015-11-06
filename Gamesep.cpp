@@ -607,7 +607,7 @@ else if(  x<=185 && x>=115 && y>=295 && y<=305 )
     t1.reset(150, 230, "SPECIAL THANKS TO ADITYA KUMAR AKASH :) ");
     t2.reset(150, 250, "CREATED BY: ");
     t3.reset(150, 270, "Samir Wadhwa (150100024)");
-    t4.reset(150, 290, "Anish Ram Senati (150100023)");
+    t4.reset(150, 290, "Aditi Sharma (150100023)");
 }
 
 getClick();
